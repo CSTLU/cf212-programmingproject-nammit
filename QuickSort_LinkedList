@@ -1,0 +1,86 @@
+#include<iostream>
+#include <iostream>
+using namespace std;
+
+struct Node {
+	int data;
+	Node *next;
+};
+
+struct List {
+	Node *head;
+	Node *tail;
+	List()
+	{
+		head = NULL;
+		tail = NULL;
+	}
+};
+
+// Chèn vào đầu list l
+void pushFront(List &l, const int value) {
+	Node *p = new Node();
+	p->next = NULL;
+	p->data = value;
+	if (l.head == NULL) { l.head = l.tail = p; } 	
+	else {
+		p->next = l.head; 			
+		l.head = p; 				
+	}
+}
+
+// Sắp xếp list
+void QuickSort(List &l) {
+
+	List l1, l2;	
+	Node *pivot, *p = new Node;
+
+	// base case
+	if (!l.head || !(l.head->next)) return; 		
+
+	pivot = l.head; 	
+	l.head = l.head->next; 	
+	pivot->next = NULL;	
+	
+	while (l.head != NULL) {	
+		p = l.head;
+		l.head = l.head->next;
+		p->next = NULL;
+		if (p->data <= pivot->data)
+		{
+			pushFront(l1, p->data); 	 
+		}
+		else pushFront(l2, p->data);	
+	}
+
+	// Gọi đệ quy để sắp xếp L1, L2
+	QuickSort(l1);
+	QuickSort(l2);
+
+	// Liên kết các node
+	if (l1.head != NULL) {
+		l.head = l1.head;
+		l1.tail->next = pivot;
+	}
+	else { l.head = pivot; }
+
+	pivot->next = l2.head;
+
+	if (l2.head != NULL) { l.tail = l2.tail; }
+	else { l.tail = pivot; }
+}
+
+// main
+int main() {
+	List l;
+	
+	pushFront(l, 1);
+	pushFront(l, 4);
+	pushFront(l, 3);
+	pushFront(l, 6);
+	pushFront(l, 1);
+	pushFront(l, 4);
+	pushFront(l, 3);
+	QuickSort(l);
+	return 0;
+}
